@@ -5,11 +5,11 @@ def preprocess(tweets):
 	return tweets
 
 def buildModel(tweets, N):
-	P1 = list() 					# index -> number of occurences
-	n1_index_mapping = dict() 		# string (n1gram) -> index in P1
-	token_index_mapping = dict() 	# string (token) -> index in tokens
+	P1 = list() 							# index -> number of occurences
+	n1_index_mapping = dict() 				# string (n1gram) -> index in P1
+	token_index_mapping = dict() 			# string (token) -> index in tokens
 
-	P = np.zeros((1,1), dtype=np.float32) 						# (n1gram index, token index) -> number of occurences of the ngram made from n1gram+token
+	P = np.zeros((1,1), dtype=np.float32) 	# (n1gram index, token index) -> number of occurences of the ngram made from n1gram+token
 
 	num_unique_tokens = 0
 	for tweet in tweets:
@@ -45,7 +45,7 @@ def buildModel(tweets, N):
 	P /= np.atleast_2d(P1).T
 	return P, n1_index_mapping, token_index_mapping
 
-def generateTweets(N, P, n1_index_lookup, token_index_lookup):
+def generateTweet(N, P, n1_index_lookup, token_index_lookup):
 	tweet = ["<start>"]*(N-1)
 	while tweet[-1] != "<end>":
 		r = random.random()
