@@ -8,7 +8,7 @@ def handler(event, context):
     print("Incoming event:")
     print(event)
 
-    err_builder = ErrorResponseBuilder(context['aws_request_id'])
+    err_builder = ErrorResponseBuilder(context.aws_request_id)
 
     request = json.loads(event['body'])    
     if err := input_validation(request, err_builder):
@@ -45,7 +45,6 @@ def handler(event, context):
 class ErrorResponseBuilder:
     def __init__(self, execution_id: str) -> None:
         self.execution_id = execution_id
-        pass
 
     def format_error_response(self, statusCode: int, message: str):
         return {
