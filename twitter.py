@@ -7,17 +7,18 @@ def authenticate():
     return tweepy.API(auth)
 twitter_api = authenticate()
 
-@profile
 def get_user_tweets(username, num_tweets):
     try:
         tweets = []
         for tweet in tweepy.Cursor(twitter_api.user_timeline, screen_name=username, include_rts=False, trim_user=True, tweet_mode='extended', count=100).items(num_tweets):
             tweets.append(tweet.full_text)
-            # print(tweet.full_text)
-        print(len(tweets))
         return tweets
-    except tweepy.errors.TooManyRequests:
-        return "Whoops, rate limit exceeded!"
-    except tweepy.errors.TweepyException as err:
-        print(err.message[0]['message'])
-        return []
+    except tweepy.TooManyRequests:
+        return (429, "Rate limit exceeded")
+    except tweepy.NotFound:
+        return (400, f"User @{username} cannot be found")
+    except tweepy.Unauthorized:
+        return (400, f"Cannot fetch tweets of @{username}, are they a private account?")
+    except tweepy.TweepyException as e:
+        print(e)
+        return (500, "Unknown error, try again later")

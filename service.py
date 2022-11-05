@@ -1,7 +1,11 @@
-import numpy as np
+import re
 import random
+import numpy as np
 
 def preprocess(tweets):
+	for i in range(len(tweets)):
+		tweets[i] = re.sub(r"https?:\/\/.*\b", 				"", 	tweets[i]) # Remove URLs
+		tweets[i] = re.sub(r"([\(\)\$\.\!\?,'`\"%&:;])", 	" \\1", tweets[i]) # Space out punctuation marks so they become their own tokens
 	return tweets
 
 def buildModel(tweets, N):
@@ -66,4 +70,13 @@ def generateTweet(N, P, n1_index_lookup, token_index_lookup):
 	return postprocess(tweet)
 
 def postprocess(tweet):
+	tweet = re.sub(r"\s*<start>\s*", 		"", 	tweet) # Remove start tags
+	tweet = re.sub(r"\s*<end>\s*", 			"", 	tweet) # Remove end tags
+	tweet = re.sub(r"\s*'\s*/g", 			"", 	tweet) # Remove lone single quotes (not part of a contraction)
+	tweet = re.sub(r"\s*('[a-zA-Z])", 		"\\1", 	tweet) # Join contradictions together
+	tweet = re.sub(r"\s*([,\.\!\?\);:])", 	"\\1 ", tweet) # Merge punctuation (after token) back into tokens (e.x. "hello !" -> "hello!")
+	tweet = re.sub(r"([\(\$])\s*", 			"\\1", 	tweet) # Merge punctuation (before token) back into tokens (e.x. "$ 1.49" -> "$1.49")
+	tweet = re.sub(r"\s*([\)])", 			"\\1", 	tweet) # 
+	tweet = re.sub(r"\s+", 					" ", 	tweet) # 
+	tweet = tweet.capitalize()
 	return tweet
