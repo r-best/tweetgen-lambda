@@ -74,6 +74,8 @@ def input_validation(request: dict, erb: ErrorResponseBuilder):
     for user in request['users']:
         if not isinstance(user['username'], str) or len(user['username']) > 15:
             return erb.format_error_response(400, f"Username @{user['username']} is not a valid Twitter username")
+        if user["username"] == "":
+            return erb.format_error_response(400, "Username cannot be blank")
         if not isinstance(user['count'], int):
             return erb.format_error_response(400, f"Invalid number of tweets to fetch for user @{user['username']}, should be an integer in the range [1,500]")
         num_tweets_sum += user['count']
