@@ -27,7 +27,7 @@ def testGenerateTweets():
     }
 
     res = handler.handler({
-        "raw_path": "/",
+        "rawPath": "/",
         "body": json.dumps(req)
         }, MockLambdaContext(aws_request_id="abcd1234"))
     if res['statusCode'] != 200:
@@ -42,7 +42,7 @@ def testGetUser():
     screenname = "verflaree"
 
     res = handler.handler({
-        "raw_path": f"/users/{screenname}"
+        "rawPath": f"/users/{screenname}"
         }, MockLambdaContext(aws_request_id="abcd1234"))
     print(res)
 

@@ -12,14 +12,14 @@ def handler(event, context):
 
     err_builder = utils.ErrorResponseBuilder(context.aws_request_id)
 
-    if event['raw_path'] == "/":
+    if event['rawPath'] == "/":
         return generateTweetsRoute(err_builder, event)
     
-    match = re.search(r'^/users/(.+)$', event['raw_path'])
+    match = re.search(r'^/users/(.+)$', event['rawPath'])
     if match != None:
         return getUserRoute(err_builder, match.group(1))
     
-    return err_builder.format_error_response(404, f"Path {event['raw_path']} not found")
+    return err_builder.format_error_response(404, f"Path {event['rawPath']} not found")
 
 def getUserRoute(err_builder, screenname):
     if err := validation.get_input_validation(screenname, err_builder):
