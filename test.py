@@ -10,23 +10,26 @@ class MockLambdaContext:
     def __init__(self, aws_request_id: str) -> None:
         self.aws_request_id = aws_request_id
 
-if __name__ == "__main__":
+def testGenerateTweets():
     req = {
         "users": [
             {
-                "username": "ohnopodcast",
-                "count": 200
+                "screenname": "ohnopodcast",
+                "count": 100
             },
-            # {
-            #     "username": "",
-            #     "count": 200
-            # }
+            {
+                "screenname": "carriepoppyYES",
+                "count": 100
+            }
         ],
-        "N": 2,
-        "M": 10
+        "N": 3,
+        "M": 20
     }
 
-    res = handler.handler({ "body": json.dumps(req) }, MockLambdaContext(aws_request_id="abcd1234"))
+    res = handler.handler({
+        "raw_path": "/",
+        "body": json.dumps(req)
+        }, MockLambdaContext(aws_request_id="abcd1234"))
     if res['statusCode'] != 200:
         print(res)
     else:
@@ -34,3 +37,15 @@ if __name__ == "__main__":
         for tweet in json.loads(res['body'])["tweets"]:
             print(tweet)
             print("----------")
+
+def testGetUser():
+    screenname = "verflaree"
+
+    res = handler.handler({
+        "raw_path": f"/users/{screenname}"
+        }, MockLambdaContext(aws_request_id="abcd1234"))
+    print(res)
+
+if __name__ == "__main__":
+    # testGenerateTweets()
+    testGetUser()
